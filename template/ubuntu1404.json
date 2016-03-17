@@ -30,7 +30,11 @@
         "initrd=/install/initrd.gz -- <enter>"
       ],
       "shutdown_command": "echo 'vagrant' | sudo -S -E shutdown -P now",
-      "hard_drive_interface": "sata"
+      "hard_drive_interface": "sata",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "1024"],
+        ["modifyvm", "{{.Name}}", "--cpus", "4"]
+      ]
     },
     {
       "vm_name": "ubuntu1404-opsworks",

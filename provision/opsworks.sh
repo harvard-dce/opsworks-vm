@@ -39,7 +39,7 @@ cat <<EOT >> $TMPDIR/cookbooks/Berksfile
 source "https://supermarket.getchef.com"
 
 # pre-load some opscode community cookbooks
-# cookbook "apt", ">= 2.0"
+cookbook "apt", ">= 2.0"
 # cookbook "apache2"
 # cookbook "aws"
 # cookbook "bluepill"

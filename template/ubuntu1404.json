@@ -89,6 +89,7 @@
       "execute_command": "echo 'vagrant' | sudo -S -E bash '{{.Path}}'",
       "scripts": [
         "provision/update.sh",
+        "provision/extra-packages.sh",
         "provision/network.sh",
         "provision/vagrant.sh",
         "provision/vmtools.sh",

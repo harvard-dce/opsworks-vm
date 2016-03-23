@@ -85,6 +85,11 @@
         "destination": "/tmp"
     },
     {
+        "type": "file",
+        "source": "deployment",
+        "destination": "/tmp"
+    },
+    {
       "type": "shell",
       "execute_command": "echo 'vagrant' | sudo -S -E bash '{{.Path}}'",
       "scripts": [
@@ -104,6 +109,8 @@
       "type": "vagrant",
       "output": "build/ubuntu1404-opsworks-{{.Provider}}.box",
       "include": [
+        "deployment/deployment",
+        "deployment/deployment.rb",
         "opsworks/opsworks",
         "opsworks/opsworks.rb",
         "opsworks/pre_config.yml",

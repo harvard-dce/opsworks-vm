@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# exit if no arguments provided
+if [[ $# -eq 0 ]]; then
+  echo "Nothing to do..."
+  exit
+fi
+
+# set the vagrant shared directory as cwd if available
+[ -d /vagrant ] && cd /vagrant
+
+# run our provisioner
+env /opt/aws/opsworks/local/bin/ruby $(dirname "${BASH_SOURCE[0]}")/deployment.rb "$@"

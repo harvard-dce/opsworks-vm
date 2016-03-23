@@ -136,7 +136,7 @@ module OpsWorks
         if !Dir.exist?(app['scm']['repository'])
           raise OpsWorksError, "Local app '#{name}' could not be found at '#{app['scm']['repository']}'"
         end
-        app['scm']['repository'] = prepare_deployment(app['scm']['repository'])
+        app['scm']['repository'] = prepare_deployment(app['scm']['repository'], 'app')
       end
     end
 
@@ -149,7 +149,7 @@ module OpsWorks
         if !Dir.exist?(cookbooks['scm']['repository'])
           raise OpsWorksError, "Local custom cookbooks could not be found at '#{cookbooks['scm']['repository']}'"
         end
-        cookbooks['scm']['repository'] = prepare_deployment(cookbooks['scm']['repository'])
+        cookbooks['scm']['repository'] = prepare_deployment(cookbooks['scm']['repository'], 'recipes')
 
         # autodetect berkshelf support
         if cookbooks['manage_berkshelf'].nil?
@@ -278,13 +278,11 @@ module OpsWorks
     dna
   end
 
-  def self.prepare_deployment(path)
-    tmp_dir = Dir.mktmpdir('vagrant-opsworks')
+  def self.prepare_deployment(path, type)
+    tmp_dir = %Q|/tmp/#{type}-repo|
+    FileUtils.mkdir_p(tmp_dir)
     File.chmod(0755, tmp_dir)
-    FileUtils.cp_r("#{path}/.", tmp_dir)
-    Dir.chdir(tmp_dir) do
-      `find . -name '.git*' -exec rm -rf {} \\; 2>&1; git init; git add .; git -c user.name='Vagrant' -c user.email=none commit -m 'Create temporary repository for deployment.'`
-    end
+    %x|/usr/bin/rsync -a --delete "#{path}/" "#{tmp_dir}"|
     tmp_dir
   end
 

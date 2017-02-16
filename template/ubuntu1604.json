@@ -1,0 +1,100 @@
+{
+  "builders": [
+    {
+      "vm_name": "ubuntu1604-opsworks",
+      "type": "virtualbox-iso",
+      "guest_os_type": "Ubuntu_64",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "iso_urls": [
+        "http://releases.ubuntu.com/16.04/ubuntu-16.04.1-server-amd64.iso",
+        "http://nl.releases.ubuntu.com/16.04/ubuntu-16.04.1-server-amd64.iso"
+      ],
+      "iso_checksum": "de5ee8665048f009577763efbf4a6f0558833e59",
+      "iso_checksum_type": "sha1",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "10000s",
+      "http_directory": "preseed",
+      "headless": true,
+      "boot_wait": "10s",
+      "boot_command": [
+        "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+        "/install/vmlinuz<wait>",
+        " auto<wait>",
+        " console-setup/ask_detect=false<wait>",
+        " console-setup/layoutcode=us<wait>",
+        " console-setup/modelcode=pc105<wait>",
+        " debconf/frontend=noninteractive<wait>",
+        " debian-installer=en_US<wait>",
+        " fb=false<wait>",
+        " initrd=/install/initrd.gz<wait>",
+        " kbd-chooser/method=us<wait>",
+        " keyboard-configuration/layout=USA<wait>",
+        " keyboard-configuration/variant=USA<wait>",
+        " locale=en_US<wait>",
+        " netcfg/get_domain=vm<wait>",
+        " netcfg/get_hostname=vagrant<wait>",
+        " grub-installer/bootdev=/dev/sda<wait>",
+        " noapic<wait>",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed1604.cfg",
+        " -- <wait>",
+        "<enter><wait>"
+      ],
+      "shutdown_command": "echo 'vagrant' | sudo -S -E shutdown -P now",
+      "hard_drive_interface": "sata",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "2048"],
+        ["modifyvm", "{{.Name}}", "--cpus", "4"],
+        ["modifyvm", "{{.Name}}", "--nictype1", "virtio"]
+
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+        "type": "file",
+        "source": "opsworks",
+        "destination": "/tmp"
+    },
+    {
+        "type": "file",
+        "source": "deployment",
+        "destination": "/tmp"
+    },
+    {
+      "type": "shell",
+      "execute_command": "echo 'vagrant' | sudo -S -E bash '{{.Path}}'",
+      "scripts": [
+        "provision/setup.sh",
+        "provision/update.sh",
+        "provision/extra-packages.sh",
+        "provision/network.sh",
+        "provision/vagrant.sh",
+        "provision/vmtools.sh",
+        "provision/minimize.sh",
+        "provision/opsworks.sh",
+        "provision/cleanup.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "build/ubuntu1604-opsworks-{{.Provider}}.box",
+      "include": [
+        "deployment/deployment",
+        "deployment/deployment.rb",
+        "opsworks/opsworks",
+        "opsworks/opsworks.rb",
+        "opsworks/pre_config.yml",
+        "opsworks/client.yml"
+      ],
+      "vagrantfile_template": "opsworks/Vagrantfile.template"
+    }
+  ]
+}

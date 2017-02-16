@@ -1,6 +1,6 @@
 
 # first is default
-BOXES = %w( ubuntu1404 ubuntu1204 ).freeze
+BOXES = %w( ubuntu1604 ubuntu1404 ubuntu1204 ).freeze
 
 # namespace for each provider
 provider_builder = lambda do |provider|

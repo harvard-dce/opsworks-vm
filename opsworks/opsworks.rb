@@ -284,7 +284,7 @@ module OpsWorks
     FileUtils.mkdir_p(tmp_dir)
     File.chmod(0755, tmp_dir)
     log "Rsyncing from #{path} to prepare deployment dir at #{tmp_dir}"
-    %x|/usr/bin/rsync -a --delete "#{path}/" "#{tmp_dir}" && cd "#{tmp_dir}" && git add . && git -c user.name='Vagrant' -c user.email=none commit -m 'Create temporary repository for deployment.'|
+    %x|/usr/bin/rsync -a --delete "#{path}/" "#{tmp_dir}" && cd "#{tmp_dir}" && git init && git add . && git -c user.name='Vagrant' -c user.email=none commit -m 'Create temporary repository for deployment.'|
     tmp_dir
   end
 

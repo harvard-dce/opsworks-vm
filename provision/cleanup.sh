@@ -12,6 +12,10 @@ unset HISTFILE
 rm -f /root/.bash_history
 rm -f /home/vagrant/.bash_history
 
+# opsworks agent update adds this redundant apt sources which contains dupes
+# and will throw errors on apt-get update
+rm /etc/apt/sources.list.d/trusty-multiverse.list
+
 # Clean up log files
 find /var/log -type f | while read f; do echo -ne '' > $f; done;
 

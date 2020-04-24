@@ -1,99 +1,92 @@
 {
   "builders": [
     {
-      "vm_name": "ubuntu1404-opsworks",
-      "type": "virtualbox-iso",
-      "guest_os_type": "Ubuntu_64",
+      "boot_command": [
+        "<esc><esc><enter><wait>",
+        "/install/vmlinuz ",
+        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
+        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+        "hostname={{.Name}} ",
+        "fb=false debconf/frontend=noninteractive ",
+        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+        "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+        "initrd=/install/initrd.gz -- <enter>"
+      ],
+      "boot_wait": "5s",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-      "virtualbox_version_file": ".vbox_version",
-      "iso_urls": [
-        "http://releases.ubuntu.com/14.04/ubuntu-14.04.5-server-amd64.iso",
-        "http://nl.releases.ubuntu.com/14.04/ubuntu-14.04.5-server-amd64.iso"
-      ],
-      "iso_checksum": "5e567024c385cc8f90c83d6763c6e4f1cd5deb6f",
-      "iso_checksum_type": "sha1",
-      "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
-      "ssh_wait_timeout": "3600s",
-      "http_directory": "preseed",
-      "headless": true,
-      "boot_wait": "5s",
-      "boot_command": [
-        "<esc><esc><enter><wait>",
-        "/install/vmlinuz ",
-        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
-        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-        "hostname={{.Name}} ",
-        "fb=false debconf/frontend=noninteractive ",
-        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-        "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
-        "initrd=/install/initrd.gz -- <enter>"
-      ],
-      "shutdown_command": "echo 'vagrant' | sudo -S -E shutdown -P now",
+      "guest_os_type": "Ubuntu_64",
       "hard_drive_interface": "sata",
-      "vboxmanage": [
-        ["modifyvm", "{{.Name}}", "--memory", "1024"],
-        ["modifyvm", "{{.Name}}", "--cpus", "4"],
-        ["modifyvm", "{{.Name}}", "--nictype1", "virtio"]
-
-      ]
-    },
-    {
-      "vm_name": "ubuntu1404-opsworks",
-      "type": "vmware-iso",
-      "guest_os_type": "ubuntu-64",
-      "iso_urls": [
-        "http://releases.ubuntu.com/14.04/ubuntu-14.04.5-server-amd64.iso",
-        "http://nl.releases.ubuntu.com/14.04/ubuntu-14.04.5-server-amd64.iso"
-      ],
-      "iso_checksum": "5e567024c385cc8f90c83d6763c6e4f1cd5deb6f",
-      "iso_checksum_type": "sha1",
-      "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
-      "ssh_wait_timeout": "3600s",
-      "http_directory": "preseed",
       "headless": true,
-      "boot_wait": "5s",
-      "boot_command": [
-        "<esc><esc><enter><wait>",
-        "/install/vmlinuz ",
-        "preseed/url=http://{{.HTTPIP}}:{{.HTTPPort}}/preseed.cfg ",
-        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-        "hostname={{.Name}} ",
-        "fb=false debconf/frontend=noninteractive ",
-        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-        "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
-        "initrd=/install/initrd.gz -- <enter>"
+      "http_directory": "preseed",
+      "iso_checksum": "13bfe163ca8ad8a6e5676b0460ca60d03387ec24",
+      "iso_checksum_type": "sha1",
+      "iso_urls": [
+        "http://releases.ubuntu.com/14.04/ubuntu-14.04.6-server-amd64.iso",
+        "http://nl.releases.ubuntu.com/14.04/ubuntu-14.04.6-server-amd64.iso"
       ],
       "shutdown_command": "echo 'vagrant' | sudo -S -E shutdown -P now",
-      "tools_upload_flavor": "linux",
-      "tools_upload_path": "vmware_tools.iso",
-      "vmdk_name": "disk",
-      "disk_type_id": "0",
-      "vmx_data": {
-        "MemTrimRate": "0",
-        "sched.mem.pshare.enable": "FALSE",
-        "mainMem.useNamedFile": "FALSE",
-        "prefvmx.minVmMemPct": "100"
-      }
+      "ssh_password": "vagrant",
+      "ssh_timeout": "3600s",
+      "ssh_username": "vagrant",
+      "cpus": 4,
+      "memory": 2048,
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "4"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--nictype1",
+          "virtio"
+        ]
+      ],
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "ubuntu1404-opsworks"
     }
+  ],
+  "post-processors": [
+    [
+      {
+        "include": [
+          "deployment/deployment",
+          "deployment/deployment.rb",
+          "opsworks/opsworks",
+          "opsworks/opsworks.rb",
+          "opsworks/pre_config.yml",
+          "opsworks/client.yml"
+        ],
+        "output": "build/ubuntu1404-opsworks-{{.Provider}}.box",
+        "type": "vagrant",
+        "vagrantfile_template": "opsworks/Vagrantfile.template"
+      }
+    ]
   ],
   "provisioners": [
     {
-        "type": "file",
-        "source": "opsworks",
-        "destination": "/tmp"
+      "destination": "/tmp",
+      "source": "opsworks",
+      "type": "file"
     },
     {
-        "type": "file",
-        "source": "deployment",
-        "destination": "/tmp"
+      "destination": "/tmp",
+      "source": "deployment",
+      "type": "file"
     },
     {
-      "type": "shell",
-      "execute_command": "echo 'vagrant' | sudo -S -E bash '{{.Path}}'",
+      "execute_command": "echo 'vagrant' | sudo -S -E {{.Vars}} bash '{{.Path}}'",
       "scripts": [
-        "provision/update.sh",
+		"provision/update.sh",
         "provision/extra-packages.sh",
         "provision/network.sh",
         "provision/vagrant.sh",
@@ -101,22 +94,8 @@
         "provision/minimize.sh",
         "provision/opsworks.sh",
         "provision/cleanup.sh"
-      ]
-    }
-  ],
-  "post-processors": [
-    {
-      "type": "vagrant",
-      "output": "build/ubuntu1404-opsworks-{{.Provider}}.box",
-      "include": [
-        "deployment/deployment",
-        "deployment/deployment.rb",
-        "opsworks/opsworks",
-        "opsworks/opsworks.rb",
-        "opsworks/pre_config.yml",
-        "opsworks/client.yml"
       ],
-      "vagrantfile_template": "opsworks/Vagrantfile.template"
+      "type": "shell"
     }
   ]
 }

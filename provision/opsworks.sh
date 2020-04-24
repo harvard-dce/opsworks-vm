@@ -1,7 +1,7 @@
 #!/bin/bash -eux
 
 # set the agent version to be installed
-AGENT_VERSION="3442-20161201055821"
+AGENT_VERSION="3450-20181203123551"
 
 echo "==> Generating chef json for first OpsWorks run"
 TMPDIR=$(mktemp -d) && trap 'rm -rf "$TMPDIR"' EXIT
@@ -34,37 +34,11 @@ cat <<EOT > $TMPDIR/dna.json
 }
 EOT
 
-# Use Berkshelf to pre-load some commonly-used community cookbooks
+# Use Berkshelf to pre-load some the apt cookbook
 cat <<EOT >> $TMPDIR/cookbooks/Berksfile
-source "https://supermarket.getchef.com"
+source "https://supermarket.chef.io"
 
-# pre-load some opscode community cookbooks
-cookbook "apt", "~> 3.0.0"
-# cookbook "apache2"
-# cookbook "aws"
-# cookbook "bluepill"
-# cookbook "build-essential"
-# cookbook "couchdb"
-# cookbook "cron"
-# cookbook "git"
-# cookbook "haproxy"
-# cookbook "memcached"
-# cookbook "mongodb"
-# cookbook "mysql"
-# cookbook "newrelic"
-# cookbook "nginx"
-# cookbook "nodejs"
-# cookbook "ohai"
-# cookbook "postgresql"
-# cookbook "php"
-# cookbook "php-fpm"
-# cookbook "python"
-# cookbook "redisio"
-# cookbook "rsyslog"
-# cookbook "runit"
-# cookbook "sysctl"
-# cookbook "yum"
-# cookbook "yum-epel"
+cookbook 'apt', '~> 3.0.0'
 EOT
 
 echo "==> Installing and running OpsWorks agent"

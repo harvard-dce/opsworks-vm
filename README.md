@@ -1,3 +1,4 @@
+
 Packer templates for AWS OpsWorks
 =================================
 
@@ -18,27 +19,9 @@ $ rake install  # install a compiled box via 'vagrant box add'
 $ rake remove   # remove an installed box via 'vagrant box remove'
 ```
 
-By default, these will build a VirtualBox compatible Vagrant image. If you wish
-to create a box for VMWare, you can prefix the commands like so:
-
-```bash
-$ rake vmware:build
-```
-
-Rake will build a Ubuntu 14.04 LTS "*Trusty Tahr*" box by default, but you can
-also specify Ubuntu 12.04 LTS "*Precise Pangolin*" like so:
-
-```bash
-$ rake build[ubuntu1204] install[ubuntu1204]
-```
-
-_**Note:** Amazon Linux is not supported as it cannot be run outside of
-Amazon EC2._
-
-
 ## Using the Box
 
-The compiled box will be named `ubuntu1404-opsworks` or `ubuntu1204-opsworks`.
+The compiled box will be named `ubuntu1404-opsworks`.
 To utilize this box in your project, create a new Vagrantfile and include
 the following:
 

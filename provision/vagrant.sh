@@ -26,3 +26,8 @@ chown -R vagrant:vagrant /home/vagrant/.ssh
 
 # Remove those annoying "stdin: is not a tty" messages when running vagrant
 sed -i "s/mesg n/tty -s \&\& mesg n/g" /root/.profile
+
+# Get rid of pointless motd release update stuff
+chmod -x /etc/update-motd.d/91-release-upgrade
+
+echo "Welcome to your local opsworks vagrant box!" > /etc/motd

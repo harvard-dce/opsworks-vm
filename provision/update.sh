@@ -2,6 +2,6 @@
 
 echo "==> Updating packages"
 
-sudo find /var/lib/apt/lists -type f -exec rm -v {} \;
-apt-get -y update
+find /var/lib/apt/lists -type f -exec rm -v {} \;
+apt-get update
 apt-get -y upgrade

@@ -1,6 +1,6 @@
 
 # first is default
-BOXES = %w( ubuntu1404 ubuntu1204 ).freeze
+BOXES = %w( ubuntu1404 ).freeze
 
 # namespace for each provider
 provider_builder = lambda do |provider|
@@ -26,7 +26,6 @@ provider_builder = lambda do |provider|
 end
 
 provider_builder.call(:virtualbox)
-provider_builder.call(:vmware)
 
 desc "Remove compiled assets and cached files"
 task :clean do
@@ -59,7 +58,6 @@ end
 # remove a box from vagrant
 def remove_box(box, provider)
   log "Removing #{box} for #{provider}"
-  provider = 'vmware_desktop' if provider.to_s == 'vmware'
   sh "vagrant box remove #{box} --provider=#{provider}"
 end
 

@@ -2,4 +2,34 @@
 
 echo "==> Install extra packages"
 
-apt-get -yq install htop nmap traceroute silversearcher-ag screen tmux iotop mytop pv nethogs autofs5 curl dkms gzip libglib2.0-dev maven mediainfo mysql-client nodejs nodejs-dev npm openjdk-7-jdk openjdk-7-jre postfix python-pip rsyslog-gnutls run-one tesseract-ocr
+# install a bunch of other extras and utils
+apt-get -yq install \
+  ubuntu-advantage-tools \
+  htop \
+  nmap \
+  traceroute \
+  screen \
+  tmux \
+  iotop \
+  mytop \
+  pv \
+  nethogs \
+  autofs5 \
+  curl \
+  dkms \
+  gzip \
+  libglib2.0-dev \
+  mediainfo \
+  silversearcher-ag \
+  postfix \
+  python-pip \
+  python-dev \
+  rsyslog-gnutls \
+  run-one \
+  tesseract-ocr \
+  sysstat \
+  dstat \
+  tree \
+  jq \
+  iozone3 \
+  fio
